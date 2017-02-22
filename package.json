@@ -1,0 +1,29 @@
+{
+  "name": "canvas-syncing-assignment-part3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+     "start": "node ./src/server.js",
+        "pretest": "eslint ./src --fix",
+        "test": "echo \"Test Complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iselleck/canvas-syncing-assignment-part3.git"
+  },
+  "author": "Isaac Selleck",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iselleck/canvas-syncing-assignment-part3/issues"
+  },
+  "homepage": "https://github.com/iselleck/canvas-syncing-assignment-part3#readme",
+  "dependencies": {
+    "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.16.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}

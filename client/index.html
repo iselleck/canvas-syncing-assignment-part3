@@ -2,12 +2,89 @@
 <html lang="en">
 <head>
     <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/babel" >
         "use strict";
+
+let socket, canvas, ctx;
+const user = `user${(Math.floor((Math.random()*1000))+1)}`;
+let draws = {};
+
+
+const connectSocket = (e) => {
+    socket = io.connect();
+    
+    socket.on('connect', () => {
+        console.log('connecting')
+    });
+    
+    socket.on('draw', (data) => {
+        if(!draws[data.name])
+            {
+                draws[data.name] = data.coords;
+                draws[data.name].color = '#014421';
+            }
+        else if(data.coords.lastUpdate > draws[data.name].lastUpdate)
+            {
+                 draws[data.name] = data.coords;
+                  draws[data.name].color = '#014421';
+            }
+        
+        draw();   
+    });
+    
+    
+}
+
+const setup = () => {
+    const time = new Date().getTime();
+    let x = Math.floor(Math.random()*(300-10)+10);
+    let y = Math.floor(Math.random()*(300-10)+10);
+    draws[user] = {lastUpdate: time, x:x, y:y, width: 100, height: 100};
+}
+
+ const draw = () => {
+      ctx.clearRect(0,0, canvas.width, canvas.height);
+       
+        let keys = Object.keys(draws);
+        
+        for(let i = 0; i < keys.length; i++){
+            const drawCall = draws[keys[i]];
+            
+            ctx.fillStyle = drawCall.color;
+            ctx.fillRect(drawCall.x, drawCall.y, drawCall.width, drawCall.height);
+        };
+    };
+
+const init = () => {
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d");
+    setup();
+    connectSocket();      
+};
+
+setInterval( () => {
+    const time = new Date().getTime();
+    
+    draws[user].lastUpdate = time;
+    if( draws[user].x  < canvas.width){
+    draws[user].x += 5;
+    draws[user].color = "#000000";
+    }
+    else {
+         draws[user].x = 0;
+    }
+    
+    socket.emit('draw', {name:user, coords: draws[user]});
+    
+    draw();
+}, 1000);
+
+window.onload = init;
     
     </script>
 </head>
 <body>
-
+    <canvas id="canvas" width="500" height="500" style="display: block; border:1px solid #d3d3d3;"></canvas>
 </body>
 </html>
